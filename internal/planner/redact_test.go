@@ -9,8 +9,8 @@ import (
 
 func TestIsSensitiveEnvKey(t *testing.T) {
 	tests := []struct {
-		key   string
-		want  bool
+		key  string
+		want bool
 	}{
 		{"SECRET_KEY", true},
 		{"POSTGRES_PASSWORD", true},
