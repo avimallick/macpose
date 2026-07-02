@@ -7,6 +7,7 @@ import (
 )
 
 var sanitizeRe = regexp.MustCompile(`[^a-zA-Z0-9_-]+`)
+var envKeyPartRe = regexp.MustCompile(`[^a-zA-Z0-9]+`)
 
 func SanitizeName(name string) string {
 	name = strings.TrimSpace(name)
@@ -45,7 +46,16 @@ func ImageTag(project, service string) string {
 	return project + "_" + service + ":latest"
 }
 
+func sanitizeEnvKeyPart(name string) string {
+	name = envKeyPartRe.ReplaceAllString(name, "_")
+	name = strings.Trim(name, "_")
+	if name == "" {
+		return "SERVICE"
+	}
+	return strings.ToUpper(name)
+}
+
 func ServiceHostEnvKey(service string) string {
-	key := strings.ToUpper(sanitizeRe.ReplaceAllString(service, "_"))
+	key := sanitizeEnvKeyPart(service)
 	return "MACPOSE_SERVICE_" + key + "_HOST"
 }
