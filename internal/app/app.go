@@ -244,7 +244,8 @@ func (a *App) cmdPlan() *cobra.Command {
 }
 
 func (a *App) cmdConvert() *cobra.Command {
-	return &cobra.Command{
+	var showSecrets bool
+	cmd := &cobra.Command{
 		Use:   "convert",
 		Short: "Print equivalent Apple container commands",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -254,11 +255,13 @@ func (a *App) cmdConvert() *cobra.Command {
 			}
 			gen := planner.NewCommandGenerator(p, plan)
 			for _, c := range gen.AllCommands() {
-				fmt.Println(planner.ShellJoin(c))
+				fmt.Println(planner.ShellJoin(c, !showSecrets))
 			}
 			return nil
 		},
 	}
+	cmd.Flags().BoolVar(&showSecrets, "show-secrets", false, "Print raw environment values instead of redacting secrets")
+	return cmd
 }
 
 func (a *App) cmdBuild() *cobra.Command {

@@ -84,7 +84,7 @@ func TestCommandGenerator(t *testing.T) {
 	if len(cmds) < 4 {
 		t.Fatalf("expected at least 4 commands, got %d", len(cmds))
 	}
-	joined := ShellJoin(cmds[0])
+	joined := ShellJoin(cmds[0], false)
 	if !strings.Contains(joined, "container network create") {
 		t.Fatalf("unexpected first command: %s", joined)
 	}

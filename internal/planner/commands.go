@@ -174,7 +174,10 @@ func (g *CommandGenerator) RunForService(service string) []string {
 	return g.Run(svc, run)
 }
 
-func ShellJoin(args []string) string {
+func ShellJoin(args []string, redactSecrets bool) string {
+	if redactSecrets {
+		args = RedactCommandArgs(args)
+	}
 	parts := make([]string, 0, len(args)+1)
 	parts = append(parts, "container")
 	for _, a := range args {
