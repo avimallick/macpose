@@ -73,3 +73,26 @@ func TestContainerNaming(t *testing.T) {
 		t.Fatalf("got %q", got)
 	}
 }
+
+func TestServiceHostEnvKey(t *testing.T) {
+	projectName := "analytico"
+	tests := []struct {
+		service  string
+		wantKey  string
+		wantHost string
+	}{
+		{"db", "MACPOSE_SERVICE_DB_HOST", "analytico_db"},
+		{"prefect-server", "MACPOSE_SERVICE_PREFECT_SERVER_HOST", "analytico_prefect-server"},
+		{"prefect_worker", "MACPOSE_SERVICE_PREFECT_WORKER_HOST", "analytico_prefect_worker"},
+		{"prefect.worker", "MACPOSE_SERVICE_PREFECT_WORKER_HOST", "analytico_prefect.worker"},
+		{"service--name", "MACPOSE_SERVICE_SERVICE_NAME_HOST", "analytico_service--name"},
+	}
+	for _, tc := range tests {
+		if got := ServiceHostEnvKey(tc.service); got != tc.wantKey {
+			t.Fatalf("ServiceHostEnvKey(%q) = %q, want %q", tc.service, got, tc.wantKey)
+		}
+		if got := ServiceHost(projectName, tc.service); got != tc.wantHost {
+			t.Fatalf("ServiceHost(%q, %q) = %q, want %q", projectName, tc.service, got, tc.wantHost)
+		}
+	}
+}
